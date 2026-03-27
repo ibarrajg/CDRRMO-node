@@ -32,10 +32,14 @@ int build_message_frame(
     frame[idx++] = dst;
     frame[idx++] = msg_id;
     frame[idx++] = TYPE_MSG;
-    frame[idx++] = data_len;
+    frame[idx++] = data_len + 2;
+    frame[idx++] = PAYLOAD_START;
+    
 
     memcpy(&frame[idx], data, data_len);
     idx += data_len;
+
+    frame[idx++] = PAYLOAD_END;
 
     uint8_t crc = calc_crc(frame, idx);
     frame[idx++] = crc;

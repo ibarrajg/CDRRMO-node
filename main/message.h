@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-void get_message(char *buffer, int max_len);
+int get_message(char *buffer, int max_len);
 
 #ifdef __cplusplus
 }

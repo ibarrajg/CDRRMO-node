@@ -4,9 +4,22 @@
 #include <stdint.h>
 
 #define STX           0xAA
-#define SRC_ID        0x01
-#define TYPE_MSG      0x01
+
+// Node IDs
+#define NODE_A_ID     0x01
+#define NODE_B_ID     0x02
+#define NODE_C_ID     0x03
+#define MAIN_NODE_ID  0x00
+
+#define SRC_ID        NODE_A_ID   // change per device
+
+#define TYPE_MSG      0x01 //
+
 #define MAX_DATA_LEN  64
+
+// Payload markers
+#define PAYLOAD_START '<'
+#define PAYLOAD_END   '>'
 
 #ifdef __cplusplus
 extern "C" {

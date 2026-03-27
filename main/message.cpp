@@ -3,7 +3,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-void get_message(char *buffer, int max_len)
+int get_message(char *buffer, int max_len)
 {
     int len = uart_read_bytes(
         UART_NUM_0,
@@ -21,7 +21,9 @@ void get_message(char *buffer, int max_len)
                 break;
             }
         }
+         return 1;  //return value
     } else {
         buffer[0] = '\0';
+        return 0;  //return value
     }
 }
