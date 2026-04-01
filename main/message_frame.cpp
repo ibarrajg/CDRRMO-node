@@ -1,48 +1,28 @@
-#include "message_frame.h"
+#include <stdio.h>
 #include <string.h>
+#include "message_frame.h"
+#include "crc.h"   // use shared CRC module
 
-uint8_t calc_crc(uint8_t *buf, int len)
+// ===== Hardcoded fields =====
+static const char *SRC  = "02";
+static const char *DST  = "02";
+static const char *TYPE = "MSG";
+
+
+// ===== Frame builder =====
+void create_message_frame(const char *input, char *output)
 {
-    uint8_t crc = 0;
+    int len = strlen(input);
 
-    for (int i = 0; i < len; i++)
-    {
-        crc ^= buf[i];
-    }
+    char temp[256];
 
-    return crc;
-}
+    // Build frame WITHOUT CRC
+    // Format: SRC|DST|TYPE|LEN|<PAYLOAD>
+    sprintf(temp, "%s|%s|%s|%d|<%s>", SRC, DST, TYPE, len, input);
 
+    // Compute CRC using shared module
+    unsigned short crc = calculate_crc16(temp);
 
-int build_message_frame(
-    uint8_t *frame,
-    uint8_t dst,
-    uint8_t msg_id,
-    uint8_t *data,
-    uint8_t data_len
-)
-{
-    if (data_len > MAX_DATA_LEN)
-        return -1;
-
-    int idx = 0;
-
-    frame[idx++] = STX;
-    frame[idx++] = SRC_ID;
-    frame[idx++] = dst;
-    frame[idx++] = msg_id;
-    frame[idx++] = TYPE_MSG;
-    frame[idx++] = data_len + 2;
-    frame[idx++] = PAYLOAD_START;
-    
-
-    memcpy(&frame[idx], data, data_len);
-    idx += data_len;
-
-    frame[idx++] = PAYLOAD_END;
-
-    uint8_t crc = calc_crc(frame, idx);
-    frame[idx++] = crc;
-
-    return idx;
+    // Final frame with CRC and frame markers { }
+    sprintf(output, "{%s|%04X}", temp, crc);
 }

@@ -1,9 +1,12 @@
 idf_component_register(
     SRCS 
-        "main.c"
-        "lora_receive.cpp" 
-        "lora_transmit.cpp" 
-        "message.cpp" 
+        "main.cpp"
+        "get_message.cpp"
         "message_frame.cpp"
+        "frame_parser.cpp"
+        "crc.cpp"  
+        "lora_uart.cpp"
+        "reception.cpp"
+        "transmission.cpp"
     INCLUDE_DIRS "."
     )
