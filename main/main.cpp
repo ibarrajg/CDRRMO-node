@@ -6,6 +6,7 @@
 #include "lora_uart.h"
 #include "transmission.h"
 #include "reception.h"
+#include "message_frame.h"
 
 extern "C" void app_main(void)
 {
@@ -14,37 +15,34 @@ extern "C" void app_main(void)
     lora_uart_init();
 
     char payload[256];
-    char raw[300];
-    static char last_raw[300] = "";
+    char ack_frame[300];
+    int sender_id;
+    int dst_id;
 
     while (1)
     {
-        // 🔹 TRANSMIT (user input)
+        // Check if there is a user message to send
         if (transmission_process())
         {
-            printf("Message sent\n\n\n");
+            printf("Message sent\n");
         }
 
-        // 🔹 RECEIVE + REPEAT
-        if (reception_process(payload, raw))
+        // Check if there is an incoming valid frame
+        if (reception_process(payload, &sender_id, &dst_id))
         {
-            printf("Payload: %s\n", payload);
+            // Display only the extracted payload
+            printf("Received message: %s\n", payload);
 
-            // 🔥 Prevent infinite loop
-            if (strcmp(raw, last_raw) != 0)
-            {
-                strcpy(last_raw, raw);
+            // Create ACK frame addressed back to the sender
+            create_ack_frame(sender_id, ack_frame);
 
-                // small delay before retransmit
-                vTaskDelay(100 / portTICK_PERIOD_MS);
+            // Send ACK automatically
+            lora_uart_send(ack_frame);
 
-                // 🔁 retransmit exact raw frame
-                lora_uart_send(raw);
-
-                printf("Retransmitting: %s\n\n\n", raw);
-            }
+            printf("ACK sent: %s\n", ack_frame);
         }
 
+        // Small delay to avoid tight looping
         vTaskDelay(50 / portTICK_PERIOD_MS);
     }
 }

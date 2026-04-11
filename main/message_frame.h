@@ -5,7 +5,11 @@
 extern "C" {
 #endif
 
+// Builds a normal message frame for outgoing user messages
 void create_message_frame(const char *input, char *output);
+
+// Builds an ACK frame addressed to the original sender
+void create_ack_frame(int dst_id, char *output);
 
 #ifdef __cplusplus
 }

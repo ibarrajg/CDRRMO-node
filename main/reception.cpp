@@ -5,8 +5,7 @@
 #include "lora_uart.h"
 #include "frame_parser.h"
 
-
-int reception_process(char *payload_out, char *raw_out)
+int reception_process(char *payload_out, int *sender_id, int *dst_id)
 {
     char rx_buffer[300];
 
@@ -14,19 +13,14 @@ int reception_process(char *payload_out, char *raw_out)
     int len = lora_uart_receive(rx_buffer, sizeof(rx_buffer) - 1);
 
     if (len > 0) {
-
-        // Step 2: Null-terminate (VERY IMPORTANT)
+        // Step 2: Null-terminate
         rx_buffer[len] = '\0';
 
         // Step 3: Print raw data
         printf("Raw Received: %s\n", rx_buffer);
 
-        // Step 4: Copy raw frame for repeater use
-        strcpy(raw_out, rx_buffer);
-
-        // Step 5: Parse frame to extract payload
-        if (parse_message_frame(rx_buffer, payload_out)) {
-
+        // Step 4: Parse frame to extract payload and IDs
+        if (parse_message_frame(rx_buffer, payload_out, sender_id, dst_id)) {
             printf("Valid frame received. Payload: %s\n", payload_out);
             return 1;
         } else {
@@ -34,5 +28,5 @@ int reception_process(char *payload_out, char *raw_out)
         }
     }
 
-    return 0; // no valid payload
+    return 0;
 }

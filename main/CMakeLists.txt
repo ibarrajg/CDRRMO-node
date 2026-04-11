@@ -8,5 +8,6 @@ idf_component_register(
         "lora_uart.cpp"
         "reception.cpp"
         "transmission.cpp"
+       
     INCLUDE_DIRS "."
     )
