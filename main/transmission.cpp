@@ -21,7 +21,7 @@ int transmission_process(void)
         // Step 3: Send via LoRa UART
         lora_uart_send(frame);
 
-        printf("sent: %s\n", frame);
+        //printf("sent: %s\n", frame); this prints the full frame with all fields and CRC, useful for debugging
 
         return 1;
     }

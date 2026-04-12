@@ -3,7 +3,11 @@
 #include "frame_parser.h"
 #include "crc.h"   // use shared CRC module
 
-int parse_message_frame(const char *frame, char *payload_out, int *sender_id, int *dst_id)
+int parse_message_frame(const char *frame,
+                        char *payload_out,
+                        int *sender_id,
+                        int *dst_id,
+                        char *type_out)
 {
     int len = strlen(frame);
 
@@ -19,8 +23,8 @@ int parse_message_frame(const char *frame, char *payload_out, int *sender_id, in
     // Example:
     // 01|00|MSG|5|<hello>|3F2A
 
-    // ===== 3. Extract sender ID and destination ID =====
-    if (sscanf(inner, "%d|%d|", sender_id, dst_id) != 2)
+    // ===== 3. Extract sender ID, destination ID, and type =====
+    if (sscanf(inner, "%d|%d|%3[^|]|", sender_id, dst_id, type_out) != 3)
         return 0;
 
     // ===== 4. Extract CRC =====
@@ -42,7 +46,7 @@ int parse_message_frame(const char *frame, char *payload_out, int *sender_id, in
     unsigned short computed_crc = calculate_crc16(inner);
 
     if (computed_crc != received_crc)
-        return 0;  // CRC mismatch
+        return 0;
 
     // ===== 6. Extract payload using < > =====
     char *start = strchr(inner, '<');
@@ -56,5 +60,5 @@ int parse_message_frame(const char *frame, char *payload_out, int *sender_id, in
     strncpy(payload_out, start + 1, payload_len);
     payload_out[payload_len] = '\0';
 
-    return 1; // success
+    return 1;
 }

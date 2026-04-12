@@ -5,7 +5,7 @@
 #include "lora_uart.h"
 #include "frame_parser.h"
 
-int reception_process(char *payload_out, int *sender_id, int *dst_id)
+int reception_process(char *payload_out, char *raw_out, int *sender_id, int *dst_id, char *type_out)
 {
     char rx_buffer[300];
 
@@ -16,12 +16,11 @@ int reception_process(char *payload_out, int *sender_id, int *dst_id)
         // Step 2: Null-terminate
         rx_buffer[len] = '\0';
 
-        // Step 3: Print raw data
-        printf("Raw Received: %s\n", rx_buffer);
+        // Step 3: Copy the full received frame for loop guarding
+        strcpy(raw_out, rx_buffer);
 
-        // Step 4: Parse frame to extract payload and IDs
-        if (parse_message_frame(rx_buffer, payload_out, sender_id, dst_id)) {
-            printf("Valid frame received. Payload: %s\n", payload_out);
+        // Step 4: Parse frame to extract payload, IDs, and type
+        if (parse_message_frame(rx_buffer, payload_out, sender_id, dst_id, type_out)) {
             return 1;
         } else {
             printf("Invalid frame or CRC error\n");
