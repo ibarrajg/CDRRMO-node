@@ -9,5 +9,6 @@ idf_component_register(
         "reception.cpp"
         "transmission.cpp"
         "loop_guard.cpp"
+        "central_logic.cpp"
     INCLUDE_DIRS "."
     )
