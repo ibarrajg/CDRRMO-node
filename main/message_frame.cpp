@@ -16,7 +16,7 @@ void create_message_frame(const char *input, char *output)
     int len = strlen(input);
 
     // Temporary buffer holds the frame body before CRC is added
-    char temp[256];
+    char temp[1024];
 
     // Build frame body without CRC first
     // Format: SRC|DST|TYPE|LEN|<PAYLOAD>
@@ -42,7 +42,7 @@ void create_ack_frame(int dst_id, char *output)
     const char *ack_payload = "Message received";
 
     // Temporary buffer holds the frame body before CRC is added
-    char temp[256];
+    char temp[1024];
 
     // Build ACK frame body without CRC first
     sprintf(temp, "%s|%s|%s|%d|<%s>",

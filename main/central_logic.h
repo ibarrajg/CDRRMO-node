@@ -7,6 +7,7 @@ extern "C" {
 
 #define ACTION_NONE 0
 #define ACTION_SHOW_AND_ACK 1
+#define ACTION_ACK_ONLY 2
 
 int handle_central_message(const char *type, int sender_id, const char *raw_frame);
 

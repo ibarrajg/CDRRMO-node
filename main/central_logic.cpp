@@ -23,7 +23,7 @@ int handle_central_message(const char *type, int sender_id, const char *raw_fram
 
     // Ignore duplicate retransmissions of the same message.
     if (!loop_guard(raw_frame)) {
-        return ACTION_NONE;
+        return ACTION_ACK_ONLY; // still ACK to prevent sender retries, but don't show again
     }
 
     return ACTION_SHOW_AND_ACK;

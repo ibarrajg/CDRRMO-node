@@ -7,7 +7,7 @@
 
 int reception_process(char *payload_out, char *raw_out, int *sender_id, int *dst_id, char *type_out)
 {
-    char rx_buffer[300];
+    char rx_buffer[1024];
 
     // Step 1: Receive data from UART LoRa
     int len = lora_uart_receive(rx_buffer, sizeof(rx_buffer) - 1);

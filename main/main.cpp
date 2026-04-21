@@ -22,9 +22,9 @@ static void transmission_task(void *pvParameters)
 
 static void reception_task(void *pvParameters)
 {
-    char payload[256];
-    char raw[300];
-    char ack_frame[300];
+    char payload[300];
+    char raw[1024];
+    char ack_frame[1024];
     char type[4];
     int sender_id;
     int dst_id;
@@ -40,12 +40,17 @@ static void reception_task(void *pvParameters)
             if (action == ACTION_SHOW_AND_ACK)
             {
                 // Send received message to the UI
-                printf("%s\n", payload);
+                printf("%02d|%s\n", sender_id, payload);
 
                 // Create ACK frame addressed back to the sender
                 create_ack_frame(sender_id, ack_frame);
 
                 // Send ACK automatically through LoRa
+                lora_uart_send(ack_frame);
+            }
+            else if (action == ACTION_ACK_ONLY)
+            {
+                create_ack_frame(sender_id, ack_frame);
                 lora_uart_send(ack_frame);
             }
         }
